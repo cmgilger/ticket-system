@@ -4,6 +4,9 @@ var path = require('path');
 var cookieParser = require('cookie-parser');
 var logger = require('morgan');
 
+// Load the database at startup so tables are created before any request comes in.
+require('./db/db');
+
 var indexRouter = require('./routes/index');
 var usersRouter = require('./routes/users');
 

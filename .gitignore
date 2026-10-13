@@ -1,0 +1,10 @@
+# Installed packages (recreate any time with `npm install`)
+node_modules/
+
+# Secrets
+.env
+
+# SQLite database + its WAL helper files (contains people's personal info)
+*.db
+*.db-wal
+*.db-shm
