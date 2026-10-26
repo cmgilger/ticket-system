@@ -44,6 +44,23 @@ const db = new Database(DB_PATH);
 // database (tickets.db-wal and tickets.db-shm); that's normal.
 db.pragma('journal_mode = WAL');
 
+// SQLite ignores REFERENCES (foreign keys) unless you switch them on
+// for each connection. With this on, an invoice can't point at a user
+// that doesn't exist.
+db.pragma('foreign_keys = ON');
+
+
+// --- One-time upgrade from the first version of the schema ------
+// The first tickets table used lowercase statuses ('open', 'replied',
+// 'closed') and had no closure_reason column. "CREATE TABLE IF NOT
+// EXISTS" below would skip it, leaving the old rules in place, so if
+// we find that old table we drop it (it only ever held test data)
+// and let schema.sql build the new one.
+const ticketColumns = db.prepare("SELECT name FROM pragma_table_info('tickets')").all();
+if (ticketColumns.length > 0 && !ticketColumns.some(c => c.name === 'closure_reason')) {
+  db.exec('DROP TABLE tickets');
+}
+
 
 // --- Create tables ---------------------------------------------
 // Read schema.sql as one big string of text...
@@ -51,7 +68,7 @@ const schema = fs.readFileSync(SCHEMA_PATH, 'utf8');
 
 // ...and run it. We use exec() rather than prepare() because exec()
 // can run a string containing MULTIPLE SQL statements (our schema has
-// a CREATE TABLE and a CREATE INDEX). prepare() only accepts one.
+// several CREATE TABLEs and CREATE INDEXes). prepare() only accepts one.
 //
 // IMPORTANT: only use exec() with SQL you wrote yourself. Never pass
 // it anything built from user input. For queries involving user data

@@ -1,6 +1,11 @@
 extends layout
 
 block content
-  h1= message
-  h2= error.status
-  pre #{error.stack}
+  section.section
+    .container.narrow
+      h1= message
+      h2= error.status
+      if error.stack
+        pre.stack #{error.stack}
+      p
+        a.btn(href='/') Back to Home

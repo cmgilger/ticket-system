@@ -1,0 +1,57 @@
+//- MOCK checkout. The card fields below have no "name" attribute, so
+//- the browser never sends what's typed in them to the server. Only
+//- the chosen payment method is submitted.
+extends layout
+
+block content
+  section.section
+    .container.narrow
+      h1 Pay Invoice ##{invoice.id}
+      .notice(role='note')
+        strong Prototype checkout:
+        |  no payment processor is connected and nothing is charged. Do not enter real card details.
+
+      .card.invoice-summary
+        p= invoice.reason
+        p.amount= money(invoice.amount_cents)
+
+      form.card.form.checkout(method='post' action=`/billing/${invoice.id}/pay`)
+        fieldset.pay-methods
+          legend Payment method
+          label.pay-option
+            input(type='radio' name='method' value='card' checked)
+            span Credit / debit card
+          label.pay-option
+            input(type='radio' name='method' value='paypal')
+            span PayPal
+          label.pay-option
+            input(type='radio' name='method' value='applepay')
+            span Apple Pay
+
+        .pay-panel(data-method='card')
+          label
+            span Name on card
+            input(type='text' autocomplete='off' placeholder='Jane Doe')
+          label
+            span Card number
+            input(type='text' inputmode='numeric' autocomplete='off' placeholder='4242 4242 4242 4242')
+          .form-row
+            label
+              span Expiry
+              input(type='text' autocomplete='off' placeholder='MM / YY')
+            label
+              span CVC
+              input(type='text' inputmode='numeric' autocomplete='off' placeholder='123')
+          button.btn.btn-block(type='submit') Pay #{money(invoice.amount_cents)}
+
+        .pay-panel(data-method='paypal' hidden)
+          button.btn.btn-block.btn-paypal(type='submit') Pay with PayPal
+
+        .pay-panel(data-method='applepay' hidden)
+          button.btn.btn-block.btn-applepay(type='submit') Pay with Apple Pay
+
+      p
+        a(href='/billing') ← Back to Billing
+
+block scripts
+  script(src='/javascripts/pay.js')

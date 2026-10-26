@@ -1,0 +1,48 @@
+extends layout
+
+block content
+  section.section
+    .container.narrow
+      h1 Create an Account
+      p Client accounts let you follow your inquiries and pay invoices online.
+
+      .notice(role='note')
+        strong Important:
+        |
+        | #{site.disclaimer}
+
+      if errors.length
+        .flash.flash-error(role='alert')
+          ul
+            each e in errors
+              li= e
+
+      form.card.form(method='post' action='/register')
+        label
+          span Full name
+          input(type='text' name='full_name' required maxlength='200' autocomplete='name' value=form.full_name)
+        .form-row
+          label
+            span Phone number
+            input(type='tel' name='phone' required maxlength='20' autocomplete='tel' value=form.phone)
+          label
+            span Email
+            input(type='email' name='email' required maxlength='200' autocomplete='email' value=form.email)
+        label
+          span Username
+          input(type='text' name='username' required minlength='3' maxlength='30' autocomplete='username' value=form.username)
+        .form-row
+          label
+            span Password (8+ characters)
+            input(type='password' name='password' required minlength='8' autocomplete='new-password')
+          label
+            span Confirm password
+            input(type='password' name='password_confirm' required minlength='8' autocomplete='new-password')
+        label.checkbox
+          input(type='checkbox' name='acknowledge' value='yes' required)
+          span I understand that creating an account does not create an attorney-client relationship.
+        button.btn.btn-block(type='submit') Create Account
+      p.center
+        | Already have an account?
+        |
+        a(href='/login') Log in

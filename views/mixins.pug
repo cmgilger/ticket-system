@@ -1,0 +1,24 @@
+//- Pieces shared by the staff and admin pages.
+
+//- Status + closure-reason form for one ticket. returnTo tells the
+//- server which page to go back to afterwards.
+mixin ticketStatusForm(t, statuses, returnTo)
+  form.ticket-status-form(method='post' action=`/staff/tickets/${t.id}`)
+    input(type='hidden' name='return_to' value=returnTo)
+    label
+      span.sr-only Status
+      select(name='status')
+        each s in statuses
+          option(value=s selected=s === t.status)= s
+    label
+      span.sr-only Reason for closure
+      input(type='text' name='closure_reason' maxlength='500' value=t.closure_reason || ''
+        placeholder='Reason for closure (optional)')
+    button.btn.btn-small(type='submit') Save
+
+mixin errorList(errors)
+  if errors && errors.length
+    .flash.flash-error(role='alert')
+      ul
+        each e in errors
+          li= e

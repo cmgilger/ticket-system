@@ -1,0 +1,69 @@
+/* =============================================================
+   theme.css: THE FILE TO EDIT TO RESTYLE THE SITE.
+
+   Every color and font on the site comes from the variables below.
+   Change a value here and it updates everywhere.
+   (style.css builds the layout and components from these.)
+   ============================================================= */
+
+
+/* --- Fonts ----------------------------------------------------
+   Cooper Black and Owners are licensed fonts, so they aren't
+   included in this repo. The browser tries, in order:
+     1. the font installed on the visitor's computer (local())
+     2. a file you put in public/fonts/ (see public/fonts/README.md)
+     3. the fallback fonts listed in --font-heading / --font-body
+   If you name your font files differently, change the url()s. */
+
+@font-face {
+  font-family: 'Cooper Black';
+  src: local('Cooper Black'), local('CooperBlack'),
+       url('/fonts/CooperBlack.woff2') format('woff2'),
+       url('/fonts/CooperBlack.woff') format('woff');
+  font-weight: normal;
+  font-style: normal;
+  font-display: swap;
+}
+
+@font-face {
+  font-family: 'Owners';
+  src: local('Owners Regular'), local('Owners-Regular'),
+       url('/fonts/Owners-Regular.woff2') format('woff2'),
+       url('/fonts/Owners-Regular.woff') format('woff');
+  font-weight: normal;
+  font-style: normal;
+  font-display: swap;
+}
+
+
+:root {
+  /* --- Brand colors --- */
+  --maroon:        #800000;  /* main color: header, headings, buttons */
+  --maroon-dark:   #5c0000;  /* hover states, footer */
+  --maroon-tint:   #f7eded;  /* light maroon backgrounds */
+  --gold:          #c9a227;  /* accents: highlights, borders, secondary buttons */
+  --gold-light:    #f3e7bf;  /* light gold backgrounds */
+  --white:         #ffffff;  /* page background, text on maroon */
+
+  /* --- Neutrals --- */
+  --text:          #2b1d1d;  /* body text */
+  --text-muted:    #6b5a5a;  /* secondary text, dates */
+  --border:        #e4d9d0;
+  --page-bg:       var(--white);
+  --section-alt:   #fbf8f3;  /* every-other section background */
+
+  /* --- Status colors (badges) --- */
+  --success:       #2e6b3a;
+  --warning:       #8a6a00;
+  --danger:        #a12020;
+
+  /* --- Fonts --- */
+  --font-heading:  'Cooper Black', 'Cooper Std', Georgia, 'Times New Roman', serif;
+  --font-body:     'Owners', 'Segoe UI', 'Helvetica Neue', Arial, sans-serif;
+  --font-size:     16px;
+
+  /* --- Shape --- */
+  --radius:        6px;
+  --shadow:        0 1px 3px rgba(60, 20, 20, 0.08), 0 4px 16px rgba(60, 20, 20, 0.06);
+  --max-width:     1100px;
+}

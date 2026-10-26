@@ -1,0 +1,39 @@
+extends layout
+
+block content
+  section.section
+    .container
+      h1 Billing
+      - const unpaid = invoices.filter(i => i.status === 'Unpaid')
+      - const balance = unpaid.reduce((sum, i) => sum + i.amount_cents, 0)
+      .card.balance
+        span Balance due
+        strong= money(balance)
+
+      if invoices.length === 0
+        .card.empty
+          p You have no invoices.
+      else
+        .table-wrap
+          table.data-table
+            thead
+              tr
+                th Invoice
+                th Date
+                th Description
+                th.num Amount
+                th Status
+                th
+            tbody
+              each inv in invoices
+                tr
+                  td ##{inv.id}
+                  td= date(inv.created_at)
+                  td= inv.reason
+                  td.num= money(inv.amount_cents)
+                  td: span.badge(class=`badge-${slug(inv.status)}`)= inv.status
+                  td
+                    if inv.status === 'Unpaid'
+                      a.btn.btn-small(href=`/billing/${inv.id}/pay`) Pay
+                    else if inv.paid_at
+                      span.meta Paid #{date(inv.paid_at)} via #{inv.payment_method}

@@ -1,0 +1,20 @@
+extends layout
+
+block content
+  section.section
+    .container.narrow
+      h1 Account Info
+      dl.card.detail-list
+        dt Name
+        dd= user.full_name
+        dt Username
+        dd= user.username
+        dt Phone
+        dd= user.phone || 'Not provided'
+        dt Email
+        dd= user.email
+        dt Account type
+        dd= user.type === 'user' ? 'Client' : user.type.charAt(0).toUpperCase() + user.type.slice(1)
+        dt Member since
+        dd= date(user.created_at)
+      p.fine-print To change your details, please contact the firm.

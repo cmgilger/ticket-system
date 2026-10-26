@@ -1,0 +1,63 @@
+extends ../layout
+
+block content
+  section.section
+    .container.narrow
+      h1 Conflict Check ##{checkId}
+      p.meta Prospective client: #{clientName}
+
+      if hasConflict
+        .result-banner.result-conflict(role='alert')
+          h2 Potential conflict found
+          p.
+            One or more names matched someone on the other side of a past or current matter.
+            Review each match below. "Possible" matches share every word of the name and need a human decision.
+      else
+        .result-banner.result-clear(role='status')
+          h2 No conflicts found
+          p None of the names conflict with existing clients, tickets, or earlier conflict checks. Any notes below are for reference only.
+
+      each r in results
+        .card.party-result(class=r.conflict ? 'has-match' : undefined)
+          header.ticket-head
+            div
+              span.meta= r.roleLabel
+              h3= r.name
+            if r.conflict
+              span.badge.badge-conflict Conflict
+            else if r.matches.length
+              span.badge.badge-closed Known, no conflict
+            else
+              span.badge.badge-clear No conflict
+          if r.matches.length
+            ul.match-list
+              each m in r.matches
+                li
+                  if m.conflict
+                    span.badge(class=m.kind === 'exact' ? 'badge-conflict' : 'badge-under-review') #{m.kind}: conflict
+                  else
+                    span.badge.badge-closed #{m.kind}: note
+                  |  #{m.name}, #{m.source}
+
+      .card
+        h2 Next steps
+        ol.next-steps
+          li
+            | Advise the firm of the result.
+            |
+            a.btn.btn-small(href=firmDraft target='_blank' rel='noopener') Email all lawyers (Gmail)
+          if hasConflict
+            li
+              | Advise the client.
+              |
+              if clientDraft
+                a.btn.btn-small.btn-gold(href=clientDraft target='_blank' rel='noopener') Email client (Gmail)
+                p.fine-print The draft does not name the conflicting party. Review it before sending.
+              else
+                span.meta No client email was entered. Go back and add one to draft the letter.
+          else
+            li Send the engagement letter (separate checklist).
+          li Filed automatically as Conflict Check ##{checkId}.
+
+      p
+        a(href='/staff/conflict-check') ← Run another check

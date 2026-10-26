@@ -1,7 +1,48 @@
+//- Shared page frame: header + navigation, flash messages, footer.
+//- Every other view starts with "extends layout" and fills "block content".
+
+mixin navlink(href, label)
+  a(href=href class=(currentPath === href || (href !== '/' && currentPath.startsWith(href)) ? 'active' : undefined))= label
+
 doctype html
-html
+html(lang='en')
   head
-    title= title
-    link(rel='stylesheet', href='/stylesheets/style.css')
+    meta(charset='utf-8')
+    meta(name='viewport' content='width=device-width, initial-scale=1')
+    title= title === site.firmName ? title : `${title} | ${site.firmName}`
+    link(rel='stylesheet' href='/stylesheets/theme.css')
+    link(rel='stylesheet' href='/stylesheets/style.css')
   body
-    block content
+    header.site-header
+      .container.header-inner
+        a.brand(href='/')= site.firmName
+        nav.main-nav(aria-label='Main')
+          +navlink('/', 'Home')
+          if user
+            +navlink('/account', 'Account')
+            +navlink('/billing', 'Billing')
+            +navlink('/tickets', 'Tickets')
+            if isStaff
+              +navlink('/staff/tickets', 'Ticket Queue')
+              +navlink('/staff/conflict-check', 'Conflict Check')
+              +navlink('/staff/invoices', 'Invoices')
+            if user.type === 'admin'
+              a.btn.btn-gold.btn-small(href='/admin') Admin
+            form.inline(method='post' action='/logout')
+              button.link-button(type='submit') Log out
+          else
+            +navlink('/login', 'Log In')
+            a.btn.btn-gold.btn-small(href='/register') Create Account
+
+    main
+      if flash
+        .container
+          .flash(class=`flash-${flash.type}` role='status')= flash.text
+      block content
+
+    footer.site-footer
+      .container
+        p.disclaimer= site.disclaimer
+        p= site.footer
+
+    block scripts

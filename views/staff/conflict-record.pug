@@ -1,0 +1,37 @@
+extends ../layout
+
+block content
+  section.section
+    .container.narrow
+      h1 Conflict Check ##{check.id}
+      dl.card.detail-list
+        dt Prospective client
+        dd= check.client_name
+        dt Result
+        dd
+          if check.has_conflict
+            span.badge.badge-conflict Conflict
+          else
+            span.badge.badge-clear Clear
+        dt Completed by
+        dd= check.completed_by_name || 'Unknown'
+        dt Date
+        dd= date(check.created_at)
+
+      h2 Parties
+      .table-wrap
+        table.data-table
+          thead
+            tr
+              th Name
+              th Role
+              th Matches at time of check
+          tbody
+            each p in parties
+              tr
+                td= p.name
+                td= p.role
+                td= p.match_summary || 'None'
+
+      p
+        a(href='/staff/conflict-check') ← Back to Conflict Check

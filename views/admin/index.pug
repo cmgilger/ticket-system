@@ -1,0 +1,177 @@
+//- Admin panel. Tabs are plain links (?tab=...) so the page works without JavaScript.
+extends ../layout
+include ../mixins
+
+block content
+  section.section
+    .container.wide
+      h1 Admin Panel
+      nav.tabs(aria-label='Admin sections')
+        a(href='/admin?tab=tickets' class=tab === 'tickets' ? 'active' : undefined) Tickets (#{tickets.length})
+        a(href='/admin?tab=users' class=tab === 'users' ? 'active' : undefined) Users (#{users.length})
+        a(href='/admin?tab=invoices' class=tab === 'invoices' ? 'active' : undefined) Invoices (#{invoices.length})
+
+      //- ---------------- Tickets ----------------
+      if tab === 'tickets'
+        if tickets.length === 0
+          p.meta No tickets yet.
+        else
+          .table-wrap
+            table.data-table
+              thead
+                tr
+                  th Ticket
+                  th Submitted
+                  th Contact
+                  th Request
+                  th Status / closure reason
+                  th
+              tbody
+                each t in tickets
+                  tr
+                    td
+                      strong= ticketNumber(t.id)
+                      br
+                      span.badge(class=`badge-${slug(t.status)}`)= t.status
+                    td= date(t.created_at)
+                    td
+                      | #{t.name}
+                      br
+                      span.meta #{t.email}
+                      br
+                      span.meta #{t.phone}
+                      if t.username
+                        br
+                        span.meta account: #{t.username}
+                    td.request-cell= t.request
+                    td: +ticketStatusForm(t, ticketStatuses, '/admin')
+                    td.actions
+                      a.btn.btn-small.btn-outline(href=t.replyUrl target='_blank' rel='noopener') Reply in Gmail
+                      form(method='post' action=`/admin/tickets/${t.id}/delete`
+                        onsubmit=`return confirm('Delete ticket ${ticketNumber(t.id)}? This cannot be undone.')`)
+                        button.link-button.danger(type='submit') Delete
+
+      //- ---------------- Users ----------------
+      if tab === 'users'
+        .table-wrap
+          table.data-table
+            thead
+              tr
+                th Username
+                th Name
+                th Contact
+                th Type
+                th Status
+                th Created
+                th
+            tbody
+              each u in users
+                tr
+                  td= u.username
+                  td= u.full_name
+                  td
+                    | #{u.email}
+                    br
+                    span.meta= u.phone
+                  td= u.type
+                  td: span.badge(class=`badge-${slug(u.status)}`)= u.status
+                  td= date(u.created_at)
+                  td.actions
+                    a.btn.btn-small(href=`/admin/users/${u.id}`) Edit
+                    a.btn.btn-small.btn-outline(href=u.messageUrl target='_blank' rel='noopener') Message
+                    if u.type === 'user'
+                      a.btn.btn-small.btn-outline(href=`/admin?tab=invoices&client=${u.id}#new-invoice`) Invoice
+
+        .card
+          h2 Create Account
+          p.meta Use this for lawyer and admin accounts. Clients can also sign up themselves.
+          +errorList(userErrors)
+          form.form(method='post' action='/admin/users')
+            .form-row
+              label
+                span Full name
+                input(type='text' name='full_name' required value=userForm.full_name)
+              label
+                span Username
+                input(type='text' name='username' required value=userForm.username autocomplete='off')
+            .form-row
+              label
+                span Email
+                input(type='email' name='email' required value=userForm.email)
+              label
+                span Phone
+                input(type='tel' name='phone' value=userForm.phone)
+            .form-row
+              label
+                span Type
+                select(name='type')
+                  each ty in userTypes
+                    option(value=ty selected=ty === userForm.type)= ty
+              label
+                span Status
+                select(name='status')
+                  each s in userStatuses
+                    option(value=s selected=s === userForm.status)= s
+              label
+                span Password (8+ characters)
+                input(type='password' name='password' required minlength='8' autocomplete='new-password')
+            button.btn(type='submit') Create Account
+
+      //- ---------------- Invoices ----------------
+      if tab === 'invoices'
+        .card#new-invoice
+          h2 Send an Invoice
+          +errorList(invoiceErrors)
+          form.form(method='post' action='/staff/invoices')
+            input(type='hidden' name='return_to' value='/admin')
+            .form-row
+              label
+                span Client
+                select(name='user_id' required)
+                  option(value='') Choose a client…
+                  each c in clients
+                    option(value=c.id selected=String(c.id) === String(invoiceForm.user_id || selectedClient))
+                      | #{c.full_name} (#{c.username})
+              label
+                span Amount (USD)
+                input(type='text' name='amount' inputmode='decimal' required placeholder='250.00')
+            label
+              span Reason
+              input(type='text' name='reason' required maxlength='300' placeholder='Initial consultation')
+            button.btn(type='submit') Send Invoice
+
+        if invoices.length === 0
+          p.meta No invoices yet.
+        else
+          .table-wrap
+            table.data-table
+              thead
+                tr
+                  th #
+                  th Client
+                  th Reason
+                  th.num Amount
+                  th Status
+                  th Created
+                  th Paid
+                  th
+              tbody
+                each inv in invoices
+                  tr
+                    td ##{inv.id}
+                    td #{inv.full_name} (#{inv.username})
+                    td= inv.reason
+                    td.num= money(inv.amount_cents)
+                    td: span.badge(class=`badge-${slug(inv.status)}`)= inv.status
+                    td
+                      | #{date(inv.created_at)}
+                      if inv.created_by_name
+                        br
+                        span.meta by #{inv.created_by_name}
+                    td
+                      if inv.paid_at
+                        | #{date(inv.paid_at)}
+                        br
+                        span.meta= inv.payment_method
+                    td.actions
+                      a.btn.btn-small(href=`/admin/invoices/${inv.id}`) Edit

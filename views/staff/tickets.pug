@@ -1,0 +1,26 @@
+extends ../layout
+include ../mixins
+
+block content
+  section.section
+    .container
+      h1 Ticket Queue
+      p Update a ticket's status here. When closing a ticket, add the reason for closure; clients see it on their Tickets page.
+
+      if tickets.length === 0
+        .card.empty: p No tickets yet.
+      else
+        .ticket-list
+          each t in tickets
+            article.card.ticket
+              header.ticket-head
+                h2.ticket-number Ticket #{ticketNumber(t.id)}
+                span.badge(class=`badge-${slug(t.status)}`)= t.status
+              p.meta
+                | #{t.name} · #{t.phone} · #{t.email} · #{date(t.created_at)}
+                if t.username
+                  |  · account: #{t.username}
+              p.ticket-request= t.request
+              .ticket-actions
+                +ticketStatusForm(t, statuses, '/staff/tickets')
+                a.btn.btn-small.btn-outline(href=t.replyUrl target='_blank' rel='noopener') Reply in Gmail

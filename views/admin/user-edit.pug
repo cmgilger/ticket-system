@@ -1,0 +1,41 @@
+extends ../layout
+include ../mixins
+
+block content
+  section.section
+    .container.narrow
+      h1 Edit Account: #{account.username}
+      p.meta Created #{date(account.created_at)}
+      +errorList(errors)
+      form.card.form(method='post' action=`/admin/users/${account.id}`)
+        .form-row
+          label
+            span Full name
+            input(type='text' name='full_name' required value=form.full_name)
+          label
+            span Username
+            input(type='text' name='username' required value=form.username autocomplete='off')
+        .form-row
+          label
+            span Email
+            input(type='email' name='email' required value=form.email)
+          label
+            span Phone
+            input(type='tel' name='phone' value=form.phone)
+        .form-row
+          label
+            span Type
+            select(name='type')
+              each ty in userTypes
+                option(value=ty selected=ty === form.type)= ty
+          label
+            span Status
+            select(name='status')
+              each s in userStatuses
+                option(value=s selected=s === form.status)= s
+        label
+          span New password (leave blank to keep the current one)
+          input(type='password' name='password' minlength='8' autocomplete='new-password')
+        button.btn(type='submit') Save
+      p
+        a(href='/admin?tab=users') ← Back to Users

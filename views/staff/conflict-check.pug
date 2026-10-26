@@ -1,0 +1,68 @@
+//- Conflict check form, modeled on the paper Conflict Check Checklist.
+extends ../layout
+
+mixin partyInputs(field, label, values, minimum)
+  - const list = (values && values.length) ? values : []
+  - const count = Math.max(list.length, minimum)
+  fieldset.party-group(data-field=field)
+    legend= label
+    .party-rows
+      - for (let i = 0; i < count; i++)
+        input(type='text' name=field maxlength='200' value=list[i] || '' aria-label=label)
+    button.link-button.add-party(type='button' hidden) + Add another
+
+block content
+  section.section
+    .container.narrow
+      h1 Conflict Check
+      p.
+        Enter every party connected to the matter. Each name is checked against client
+        accounts, intake tickets, parties from earlier conflict checks, and Clio (once connected).
+        Every check is saved to the Conflict Check folder below.
+
+      if error
+        .flash.flash-error(role='alert')= error
+
+      form.card.form(method='post' action='/staff/conflict-check')
+        .form-row
+          label
+            span Prospective client name
+            input(type='text' name='client_name' required maxlength='200' value=form.client_name)
+          label
+            span Client email (optional, for the notice letter)
+            input(type='email' name='client_email' maxlength='200' value=form.client_email)
+
+        +partyInputs('opposing', 'Opposing parties', form.opposing, 1)
+        +partyInputs('co_defendant', 'Co-defendants', form.co_defendants, 1)
+        +partyInputs('related', 'Other related parties', form.related, 2)
+
+        button.btn(type='submit') Run Conflict Check
+
+      h2 Conflict Check Folder
+      if checks.length === 0
+        p.meta No checks have been run yet.
+      else
+        .table-wrap
+          table.data-table
+            thead
+              tr
+                th #
+                th Client
+                th Result
+                th Completed by
+                th Date
+            tbody
+              each c in checks
+                tr
+                  td: a(href=`/staff/conflict-check/${c.id}`) ##{c.id}
+                  td= c.client_name
+                  td
+                    if c.has_conflict
+                      span.badge.badge-conflict Conflict
+                    else
+                      span.badge.badge-clear Clear
+                  td= c.completed_by_name || 'Unknown'
+                  td= date(c.created_at)
+
+block scripts
+  script(src='/javascripts/conflict-check.js')

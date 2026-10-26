@@ -1,0 +1,41 @@
+{
+  "firmName": "Your Firm Name",
+  "tagline": "Steady counsel when it matters most.",
+  "heroText": "We represent individuals and families in civil disputes, estate matters, and criminal defense. Tell us about your situation and an attorney will review it, usually within one business day.",
+
+  "aboutHeading": "About the Firm",
+  "aboutParagraphs": [
+    "Replace this paragraph with the firm's story: when it was founded, who it serves, and what makes it different.",
+    "A second paragraph can describe the team, the firm's approach to clients, or community involvement."
+  ],
+
+  "practiceHeading": "Practice Areas",
+  "practiceAreas": [
+    { "title": "Civil Litigation", "text": "Contract disputes, property disputes, and personal injury claims." },
+    { "title": "Estate Planning", "text": "Wills, trusts, powers of attorney, and probate administration." },
+    { "title": "Criminal Defense", "text": "Representation from arraignment through trial and appeal." }
+  ],
+
+  "contact": {
+    "heading": "Contact",
+    "address": "123 Main Street, Suite 400, Your City, ST 00000",
+    "phone": "(555) 555-0100",
+    "email": "office@example.com",
+    "hours": "Monday to Friday, 9:00 a.m. to 5:00 p.m."
+  },
+
+  "intake": {
+    "heading": "Request a Consultation",
+    "intro": "Fill out the form below and we'll be in touch.",
+    "nameLabel": "Full name",
+    "phoneLabel": "Phone number",
+    "emailLabel": "Email",
+    "requestLabel": "How can we help?",
+    "submitLabel": "Submit Inquiry",
+    "successMessage": "Thank you. Your inquiry has been received and an attorney will review it shortly."
+  },
+
+  "disclaimer": "Submitting this form or creating an account does not create an attorney-client relationship. Please do not send confidential information until an attorney has agreed to represent you in writing.",
+
+  "footer": "© Your Firm Name. Attorney advertising. Prior results do not guarantee a similar outcome."
+}

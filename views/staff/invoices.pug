@@ -1,0 +1,57 @@
+extends ../layout
+include ../mixins
+
+block content
+  section.section
+    .container
+      h1 Invoices
+
+      .card
+        h2 Send an Invoice
+        p.meta The invoice appears on the client's Billing page, where they can pay it.
+        +errorList(errors)
+        if clients.length === 0
+          p No active client accounts yet.
+        else
+          form.form(method='post' action='/staff/invoices')
+            .form-row
+              label
+                span Client
+                select(name='user_id' required)
+                  option(value='') Choose a client…
+                  each c in clients
+                    option(value=c.id selected=String(c.id) === String(form.user_id))
+                      | #{c.full_name} (#{c.username})
+              label
+                span Amount (USD)
+                input(type='text' name='amount' inputmode='decimal' required placeholder='250.00' value=form.amount)
+            label
+              span Reason
+              input(type='text' name='reason' required maxlength='300' placeholder='Initial consultation' value=form.reason)
+            button.btn(type='submit') Send Invoice
+
+      h2 All Invoices
+      if invoices.length === 0
+        p.meta No invoices yet.
+      else
+        .table-wrap
+          table.data-table
+            thead
+              tr
+                th #
+                th Client
+                th Reason
+                th.num Amount
+                th Status
+                th Created
+                th By
+            tbody
+              each inv in invoices
+                tr
+                  td ##{inv.id}
+                  td #{inv.full_name} (#{inv.username})
+                  td= inv.reason
+                  td.num= money(inv.amount_cents)
+                  td: span.badge(class=`badge-${slug(inv.status)}`)= inv.status
+                  td= date(inv.created_at)
+                  td= inv.created_by_name || ''

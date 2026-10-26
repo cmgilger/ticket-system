@@ -1,0 +1,26 @@
+extends layout
+
+block content
+  section.section
+    .container
+      h1 Tickets
+      if tickets.length === 0
+        .card.empty
+          p You don't have any tickets yet.
+          a.btn(href='/#intake') Submit an inquiry
+      else
+        .ticket-list
+          each t in tickets
+            article.card.ticket
+              header.ticket-head
+                h2.ticket-number Ticket #{ticketNumber(t.id)}
+                span.badge(class=`badge-${slug(t.status)}`)= t.status
+              p.meta Submitted #{date(t.created_at)}
+              p.ticket-request= t.request
+              if t.status === 'Closed' && t.closure_reason
+                p.closure
+                  strong Closure note:
+                  |
+                  | #{t.closure_reason}
+        p
+          a.btn.btn-outline(href='/#intake') Submit another inquiry

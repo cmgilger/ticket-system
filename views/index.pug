@@ -1,5 +1,89 @@
+//- Front page. All of the wording comes from content/home.json;
+//- edit that file to change the text without touching this template.
 extends layout
 
 block content
-  h1= title
-  p Welcome to #{title}
+  section.hero
+    .container.hero-inner
+      .hero-text
+        h1= home.firmName
+        p.tagline= home.tagline
+        p= home.heroText
+        if !user
+          p.hero-actions
+            a.btn.btn-gold(href='#intake')= home.intake.heading
+            a.btn.btn-outline-light(href='/login') Client Log In
+
+      if user
+        .dashboard-card
+          h2 Welcome, #{user.full_name.split(' ')[0]}
+          nav.dashboard-tabs(aria-label='Your account')
+            a(href='/account') Account Info
+            a(href='/billing') Billing
+            a(href='/tickets') Tickets
+            if isStaff
+              a(href='/staff/conflict-check') Conflict Check
+              a(href='/staff/tickets') Ticket Queue
+          if user.type === 'admin'
+            a.btn.btn-gold.btn-block(href='/admin') Admin Panel
+
+  section.section#intake
+    .container.narrow
+      h2= home.intake.heading
+      p= home.intake.intro
+
+      if submitted
+        .flash.flash-success(role='status')= home.intake.successMessage
+
+      if errors.length
+        .flash.flash-error(role='alert')
+          ul
+            each e in errors
+              li= e
+
+      form.card.form(method='post' action='/intake')
+        label
+          span= home.intake.nameLabel
+          input(type='text' name='name' required maxlength='200' autocomplete='name'
+            value=form.name || (user && user.full_name) || '')
+        .form-row
+          label
+            span= home.intake.phoneLabel
+            input(type='tel' name='phone' required maxlength='20' autocomplete='tel'
+              value=form.phone || (user && user.phone) || '')
+          label
+            span= home.intake.emailLabel
+            input(type='email' name='email' required maxlength='200' autocomplete='email'
+              value=form.email || (user && user.email) || '')
+        label
+          span= home.intake.requestLabel
+          textarea(name='request' rows='6' required maxlength='5000')= form.request || ''
+        p.fine-print= home.disclaimer
+        button.btn(type='submit')= home.intake.submitLabel
+
+  section.section.section-alt
+    .container.two-col
+      div
+        h2= home.aboutHeading
+        each paragraph in home.aboutParagraphs
+          p= paragraph
+      div
+        h2= home.practiceHeading
+        ul.practice-list
+          each area in home.practiceAreas
+            li
+              h3= area.title
+              p= area.text
+
+  section.section
+    .container.narrow
+      h2= home.contact.heading
+      dl.contact-list
+        dt Address
+        dd= home.contact.address
+        dt Phone
+        dd: a(href=`tel:${home.contact.phone}`)= home.contact.phone
+        dt Email
+        dd: a(href=`mailto:${home.contact.email}`)= home.contact.email
+        dt Hours
+        dd= home.contact.hours
