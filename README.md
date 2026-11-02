@@ -104,11 +104,11 @@ PayPal, or Clio Payments.
 | Layout and component styling                  | `public/stylesheets/style.css` |
 | Front-page structure                          | `views/index.pug` |
 
-**Fonts:** headings use Cooper Black and body text uses Owners. Both are
-licensed fonts, so they aren't in the repo. Put your web font files in
-`public/fonts/` (see `public/fonts/README.md`). Until then, the site uses the
-font if it's installed on the visitor's computer, and otherwise falls back to
-Georgia / Segoe UI.
+**Fonts:** headings use Merriweather, which is open source and included in
+`public/fonts/`. Body text uses Owners, a licensed font that isn't in the repo.
+Put your web font files in `public/fonts/` (see `public/fonts/README.md`). Until
+then, the site uses Owners if it's installed on the visitor's computer, and
+otherwise falls back to Segoe UI.
 
 ## Clio Manage integration (stub)
 
@@ -130,7 +130,7 @@ middleware/            auth.js (login + roles), flash.js (one-time messages)
 routes/                index (front page + intake), auth, account, staff, admin
 services/              conflicts, gmail links, clio stub, formatting helpers
 views/                 Pug templates (staff/ and admin/ subfolders)
-public/                CSS, small browser scripts, fonts
+public/                CSS, small browser scripts, fonts, images
 ```
 
 ## Prototype limitations

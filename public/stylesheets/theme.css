@@ -8,19 +8,26 @@
 
 
 /* --- Fonts ----------------------------------------------------
-   Cooper Black and Owners are licensed fonts, so they aren't
-   included in this repo. The browser tries, in order:
+   Merriweather (headings) is open source and its files are in
+   public/fonts/. Owners (body text) is a licensed font, so it isn't
+   included in this repo. For Owners the browser tries, in order:
      1. the font installed on the visitor's computer (local())
      2. a file you put in public/fonts/ (see public/fonts/README.md)
-     3. the fallback fonts listed in --font-heading / --font-body
+     3. the fallback fonts listed in --font-body
    If you name your font files differently, change the url()s. */
 
 @font-face {
-  font-family: 'Cooper Black';
-  src: local('Cooper Black'), local('CooperBlack'),
-       url('/fonts/CooperBlack.woff2') format('woff2'),
-       url('/fonts/CooperBlack.woff') format('woff');
-  font-weight: normal;
+  font-family: 'Merriweather';
+  src: url('/fonts/Merriweather-400.woff2') format('woff2');
+  font-weight: 400;
+  font-style: normal;
+  font-display: swap;
+}
+
+@font-face {
+  font-family: 'Merriweather';
+  src: url('/fonts/Merriweather-700.woff2') format('woff2');
+  font-weight: 700;
   font-style: normal;
   font-display: swap;
 }
@@ -58,7 +65,7 @@
   --danger:        #a12020;
 
   /* --- Fonts --- */
-  --font-heading:  'Cooper Black', 'Cooper Std', Georgia, 'Times New Roman', serif;
+  --font-heading:  'Merriweather', Georgia, 'Times New Roman', serif;
   --font-body:     'Owners', 'Segoe UI', 'Helvetica Neue', Arial, sans-serif;
   --font-size:     16px;
 

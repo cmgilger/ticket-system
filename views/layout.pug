@@ -33,6 +33,7 @@ html(lang='en')
           else
             +navlink('/login', 'Log In')
             a.btn.btn-gold.btn-small(href='/register') Create Account
+        a.header-phone(href=`tel:${site.contact.phone}` aria-label=`Call us at ${site.contact.phone}`)= site.contact.phone
 
     main
       if flash
